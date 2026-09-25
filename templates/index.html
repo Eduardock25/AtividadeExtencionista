@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Tarefas</title>
+    <style>
+        body { font-family: Arial; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .tarefa { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .pendente { border-left: 5px solid orange; }
+        .concluida { border-left: 5px solid green; background: #f9f9f9; }
+        a { margin-right: 10px; text-decoration: none; color: #0066cc; }
+        .btn { background: #0066cc; color: white; padding: 8px 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Organização de Tarefas</h1>
+    <a href="{{ url_for('cadastrar_tarefa') }}" class="botao-novo">+ Cadastrar Nova Tarefa</a>
+    <hr>
+
+    {% for tarefa in tarefas %}
+    <div class="tarefa {{ tarefa.status }}">
+        <h3>{{ tarefa.titulo }}</h3>
+        <p><strong>Disciplina:</strong> {{ tarefa.disciplina }}</p>
+        <p><strong>Descrição:</strong> {{ tarefa.descricao }}</p>
+        <p><strong>Prazo:</strong> {{ tarefa.prazo }}</p>
+        <p><strong>Status:</strong> {{ tarefa.status.replace('_', ' ') }}</p>
+        
+        {% if tarefa.status != 'concluida' %}
+        <a href="{{ url_for('concluir', id=tarefa.id) }}">✅ Marcar Concluída</a>
+        {% endif %}
+        <a href="{{ url_for('excluir', id=tarefa.id) }}" style="color:red;">🗑️ Excluir</a>
+    </div>
+    {% else %}
+    <p>Nenhuma tarefa cadastrada. Cadastre a primeira!</p>
+    {% endfor %}
+</body>
+</html>
