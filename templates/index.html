@@ -2,36 +2,105 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Tarefas</title>
     <style>
-        body { font-family: Arial; max-width: 1000px; margin: 0 auto; padding: 20px; }
-        .tarefa { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
-        .pendente { border-left: 5px solid orange; }
-        .concluida { border-left: 5px solid green; background: #f9f9f9; }
-        a { margin-right: 10px; text-decoration: none; color: #0066cc; }
-        .btn { background: #0066cc; color: white; padding: 8px 12px; border-radius: 4px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .botao-novo {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .botao-novo:hover {
+            background-color: #2980b9;
+        }
+        .tarefa {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .pendente {
+            border-left: 5px solid #f39c12;
+        }
+        .concluida {
+            border-left: 5px solid #27ae60;
+            background-color: #f9f9f9;
+        }
+        .acoes a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .link-concluir {
+            color: #27ae60;
+        }
+        .link-excluir {
+            color: #e74c3c;
+        }
     </style>
 </head>
 <body>
-    <h1>Sistema de Organização de Tarefas</h1>
-    <a href="{{ url_for('cadastrar_tarefa') }}" class="botao-novo">+ Cadastrar Nova Tarefa</a>
-    <hr>
-
-    {% for tarefa in tarefas %}
-    <div class="tarefa {{ tarefa.status }}">
-        <h3>{{ tarefa.titulo }}</h3>
-        <p><strong>Disciplina:</strong> {{ tarefa.disciplina }}</p>
-        <p><strong>Descrição:</strong> {{ tarefa.descricao }}</p>
-        <p><strong>Prazo:</strong> {{ tarefa.prazo }}</p>
-        <p><strong>Status:</strong> {{ tarefa.status.replace('_', ' ') }}</p>
+    <div class="container">
+        <h1>📚 Sistema de Organização de Tarefas</h1>
         
-        {% if tarefa.status != 'concluida' %}
-        <a href="{{ url_for('concluir', id=tarefa.id) }}">✅ Marcar Concluída</a>
+        <a href="{{ url_for('cadastrar_tarefa') }}" class="botao-novo">+ Cadastrar Nova Tarefa</a>
+        
+        <hr>
+
+        {% if tarefas %}
+            {% for tarefa in tarefas %}
+                <div class="tarefa {{ tarefa.status }}">
+                    <h3>{{ tarefa.titulo }}</h3>
+                    <p><strong>Disciplina:</strong> {{ tarefa.disciplina }}</p>
+                    <p><strong>Descrição:</strong> {{ tarefa.descricao }}</p>
+                    <p><strong>Prazo:</strong> {{ tarefa.prazo }}</p>
+                    <p><strong>Situação:</strong> 
+                        {% if tarefa.status == 'pendente' %}
+                            ⏳ Pendente
+                        {% else %}
+                            ✅ Concluída
+                        {% endif %}
+                    </p>
+                    
+                    <div class="acoes">
+                        {% if tarefa.status != 'concluida' %}
+                            <a href="{{ url_for('concluir_tarefa', tarefa_id=tarefa.id) }}" class="link-concluir">
+                                ✅ Marcar Concluída
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('excluir_tarefa', tarefa_id=tarefa.id) }}" class="link-excluir">
+                            🗑️ Excluir
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #666;">
+                Nenhuma tarefa cadastrada ainda. <br>
+                Clique em "Cadastrar Nova Tarefa" para começar!
+            </p>
         {% endif %}
-        <a href="{{ url_for('excluir', id=tarefa.id) }}" style="color:red;">🗑️ Excluir</a>
     </div>
-    {% else %}
-    <p>Nenhuma tarefa cadastrada. Cadastre a primeira!</p>
-    {% endfor %}
 </body>
 </html>
